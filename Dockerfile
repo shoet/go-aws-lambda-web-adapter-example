@@ -23,4 +23,9 @@ WORKDIR /app
 
 COPY --from=builder /app/cmd/bin/main .
 
+COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.7.2 /lambda-adapter /opt/extensions/lambda-adapter
+
+ENV PORT=3000
+EXPOSE 3000
+
 CMD ["/app/main"]

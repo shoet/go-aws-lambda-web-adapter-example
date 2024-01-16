@@ -1,0 +1,27 @@
+service: go-aws-lambda-web-adapter-example
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  region: ap-northeast-1
+  ecr:
+    images:
+      adapterExample:
+        path: ./
+        platform: linux/amd64
+
+package:
+  patterns:
+    - "!./**"
+    - ./bin/**
+
+functions:
+  LambdaAdapterExample:
+    image:
+      name: adapterExample
+    name: lambda-adapter-example
+    description: test function
+    events:
+      - httpApi:
+          path: /{proxy+}
+          method: any

@@ -7,10 +7,19 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/kelseyhightower/envconfig"
 )
 
 type ServerConfig struct {
 	Port int
+}
+
+func NewServerConfig() (*ServerConfig, error) {
+	var serverConfig ServerConfig
+	if err := envconfig.Process("", &serverConfig); err != nil {
+		return nil, fmt.Errorf("failed to process env var: %v", err)
+	}
+	return &serverConfig, nil
 }
 
 type Server struct {
@@ -63,7 +72,10 @@ func (h *HealthCheckHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	config := &ServerConfig{Port: 8080}
+	config, err := NewServerConfig()
+	if err != nil {
+		panic(err)
+	}
 	handler, err := NewHandlers()
 	if err != nil {
 		panic(err)
